@@ -17,10 +17,18 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use(cors())
 app.use('/api', searchRouter);
+
+if(process.env.NODE_ENV === 'production') {
+  //Static pages
+  app.use(express.static(path.join(__dirname, 'public')));
+
+  //handle routes for front end
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -41,6 +49,6 @@ app.use(function(err, req, res, next) {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, function () {
-  console.log('Example app listening on port 3000!')
+  console.log(`App is listening on port ${PORT}`)
 })
 module.exports = app;
