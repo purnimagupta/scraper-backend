@@ -5,27 +5,27 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 
-var searchRouter = require('./routes/search');
+var searchRouter = require('./src/routes/search');
 
 var app = express();
 
-// view engine setup
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-
 app.use(cors())
 app.use('/api', searchRouter);
+// view engine setup
 
 if(process.env.NODE_ENV === 'production') {
   //Static pages
   app.use(express.static(path.join(__dirname, 'public')));
-
+  
   //handle routes for front end
   app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'))
 }
