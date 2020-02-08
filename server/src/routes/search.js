@@ -2,7 +2,10 @@ var express = require('express');
 var router = express.Router();
 var axios = require('axios');
 var scraper = require('../utils/scraper');
-var convertStrToObj = require('../utils/strToObj')
+var convertStrToObj = require('../utils/strToObj');
+var fetch = require('node-fetch');
+
+
 
 
 function getData(symbol, period) {
