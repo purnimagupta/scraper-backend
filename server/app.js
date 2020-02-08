@@ -4,8 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
-
+var Queue = require('bull');
 var searchRouter = require('./src/routes/search');
+
+
 
 var app = express();
 
@@ -18,9 +20,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+let REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+
+let workQueue = new Queue('work', REDIS_URL);
+
+app.post('/api', async (req, res) => {
+  let job = await workQueue.add();
+  res.json({ id: job.id });
+});
+
+
 app.use(cors())
 app.use('/api', searchRouter);
-// view engine setup
+
+
 
 if(process.env.NODE_ENV === 'production') {
   //Static pages
