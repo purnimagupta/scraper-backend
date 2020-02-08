@@ -3,10 +3,20 @@ var router = express.Router();
 var axios = require('axios');
 var scraper = require('../utils/scraper');
 var convertStrToObj = require('../utils/strToObj');
-var fetch = require('node-fetch');
+const stream = require('stream');
+const {promisify} = require('util');
+const got = require('got')
 
 
+const pipeline = promisify(stream.pipeline);
 
+// async function getData(symbol, period) {
+//   return await pipeline(
+//     got.stream(`https://www1.nseindia.com/corporates/listDir/getListDirectEQ.jsp?symbol=${symbol}&Period=${period}`),
+    
+//   );
+  
+// }
 
 function getData(symbol, period) {
   const request = axios.get(`https://www1.nseindia.com/corporates/listDir/getListDirectEQ.jsp?symbol=${symbol}&Period=${period}`)
@@ -27,7 +37,7 @@ router.get('/search', async function(req, res, next) {
   const url = getURL(symbol);
 
   try {
-      const data = await getData(symbol, period);
+      const data = await getData(symbol, period)
       const strToObj = convertStrToObj(data.trim()) 
 
       if(strToObj.rows.length > 0) {
