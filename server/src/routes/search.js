@@ -6,7 +6,12 @@ var convertStrToObj = require('../utils/strToObj');
 
 
 function getData(symbol, period) {
-  const request = axios.get(`https://www1.nseindia.com/corporates/listDir/getListDirectEQ.jsp?symbol=${symbol}&Period=${period}`)
+  const options = {
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  }
+  const request = axios.get(`https://www1.nseindia.com/corporates/listDir/getListDirectEQ.jsp?symbol=${symbol}&Period=${period}`, options)
   return request
     .then(result => { return result.data })
     .catch(error => { console.error(error); return Promise.reject(error); });
